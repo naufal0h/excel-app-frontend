@@ -5,7 +5,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [allData, setAllData] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
-  const API_BASE_URL = "https://excel-app-backend-qug4.onrender.com/";
+  const API_BASE_URL = "https://excel-app-backend-qug4.onrender.com";
 
   useEffect(() => {
     fetchData();
