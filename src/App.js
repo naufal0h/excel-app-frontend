@@ -1,23 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [file, setFile] = useState(null);
+  const [allData, setAllData] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const res = await axios.get('http://localhost:5000/data');
+    setAllData(res.data);
+  };
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', file);
+    await axios.post('http://localhost:5000/upload', formData);
+    fetchData();
+    alert("Upload berhasil!");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
+      <h1>Excel Viewer & Storage</h1>
+      
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <button onClick={handleUpload}>Simpan ke Server</button>
+
+      <hr />
+
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        {allData.map((item, idx) => (
+          <button key={idx} onClick={() => setActiveTab(idx)} 
+            style={{ padding: '10px', background: activeTab === idx ? '#007bff' : '#ccc', color: 'white' }}>
+            {item.filename}
+          </button>
+        ))}
+      </div>
+
+      {allData[activeTab] && Object.entries(allData[activeTab].content).map(([sheetName, rows]) => (
+        <div key={sheetName}>
+          <h3>Sheet: {sheetName}</h3>
+          <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>{rows[0] && Object.keys(rows[0]).map(key => <th key={key}>{key}</th>)}</tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={i}>{Object.values(row).map((val, j) => <td key={j}>{val}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
     </div>
   );
 }
