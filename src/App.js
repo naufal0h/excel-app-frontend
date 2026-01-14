@@ -12,8 +12,13 @@ function App() {
   }, []);
 
   const fetchData = async () => {
-    const res = await axios.get(`${API_BASE_URL}/data`);
-    setAllData(res.data);
+    try {
+      // Pastikan pemanggilan menggunakan template literal yang benar
+      const res = await axios.get(`${API_BASE_URL}/data`);
+      setAllData(res.data);
+    } catch (err) {
+      console.error("Error mengambil data:", err);
+    }
   };
 
   const handleUpload = async () => {
