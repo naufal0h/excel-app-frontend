@@ -17,10 +17,22 @@ function App() {
   };
 
   const handleUpload = async () => {
+    if (!file) return;
+  
     const formData = new FormData();
-    formData.append('file', file);
-    await axios.post(`${API_BASE_URL}/upload`, formData);
-    fetchData();
+    // "file" di bawah ini harus SAMA dengan nama di upload.single('file') di backend
+    formData.append('file', file); 
+  
+    try {
+      await axios.post(`${API_BASE_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // ... rest of code
+    } catch (err) {
+      console.error("Upload error", err);
+    }
   };
 
   return (
