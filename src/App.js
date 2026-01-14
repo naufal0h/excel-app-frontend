@@ -11,14 +11,14 @@ function App() {
   }, []);
 
   const fetchData = async () => {
-    const res = await axios.get('http://localhost:5000/data');
+    const res = await axios.get('https://excel-app-backend-qug4.onrender.com');
     setAllData(res.data);
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append('file', file);
-    await axios.post('http://localhost:5000/upload', formData);
+    await axios.post('https://excel-app-backend-qug4.onrender.com/upload', formData);
     fetchData();
     alert("Upload berhasil!");
   };
